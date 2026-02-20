@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Pulse-UK Mobile Banking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .mobile-container {
+            max-width: 414px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mobile-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .mobile-header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .mobile-header p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .status-bar {
+            background: #34495e;
+            color: white;
+            padding: 8px 20px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            margin: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .balance-amount {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .quick-action {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .quick-action-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .quick-action-label {
+            font-size: 12px;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .payment-section {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .button.secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+        
+        .result {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+        
+        .biometric-section {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .biometric-icon {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        
+        .biometric-text {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .touch-id-button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        #mobile-app-loaded {
+            display: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 414px) {
+            .mobile-container {
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="mobile-header">
+            <h1>Pulse-UK Mobile Banking</h1>
+            <p>Secure Mobile Banking for UK Customers</p>
+        </div>
+        
+        <div class="status-bar">
+            <span>9:41 AM</span>
+            <span>📶 4G</span>
+            <span>🔋 87%</span>
+        </div>
+        
+        <div id="mobile-app-container">
+            <div class="balance-card">
+                <div class="balance-label">Available Balance</div>
+                <div class="balance-amount" id="mobile-balance">£5,250.00</div>
+            </div>
+            
+            <div class="quick-actions">
+                <div class="quick-action" onclick="quickTransfer()">
+                    <div class="quick-action-icon">💸</div>
+                    <div class="quick-action-label">Transfer</div>
+                </div>
+                <div class="quick-action" onclick="quickPay()">
+                    <div class="quick-action-icon">💳</div>
+                    <div class="quick-action-label">Pay</div>
+                </div>
+                <div class="quick-action" onclick="quickDeposit()">
+                    <div class="quick-action-icon">📥</div>
+                    <div class="quick-action-label">Deposit</div>
+                </div>
+            </div>
+            
+            <div class="payment-section">
+                <div class="section-title">Make Payment</div>
+                
+                <div class="form-group">
+                    <label for="mobile-payment-amount">Amount (£)</label>
+                    <input type="number" id="mobile-payment-amount" placeholder="Enter amount" value="1200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mobile-recipient">Recipient</label>
+                    <input type="text" id="mobile-recipient" placeholder="Enter recipient" value="Salary Account">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mobile-reference">Reference</label>
+                    <input type="text" id="mobile-reference" placeholder="Enter reference" value="Monthly Salary">
+                </div>
+                
+                <button id="mobile-payment-button" onclick="makeMobilePayment()">Process Payment</button>
+                <button id="mobile-confirm-payment" class="hidden" onclick="confirmMobilePayment()">Confirm Payment</button>
+            </div>
+            
+            <div class="biometric-section hidden" id="biometric-section">
+                <div class="biometric-icon">👆</div>
+                <div class="biometric-text">Confirm with Touch ID</div>
+                <button class="touch-id-button" onclick="confirmBiometric()">Authenticate</button>
+            </div>
+            
+            <div id="mobile-payment-result"></div>
+        </div>
+        
+        <div id="mobile-app-loaded"></div>
+    </div>
+
+    <script>
+        function simulateMobileDelay(min, max) {
+            return new Promise(resolve => {
+                const delay = Math.random() * (max - min) + min;
+                setTimeout(resolve, delay);
+            });
+        }
+
+        function simulateMobileFailure() {
+            return Math.random() < 0.08; // 8% failure rate on mobile
+        }
+
+        function updateBalance(change) {
+            const balanceElement = document.getElementById('mobile-balance');
+            const currentBalance = parseFloat(balanceElement.textContent.replace('£', '').replace(',', ''));
+            const newBalance = currentBalance + change;
+            balanceElement.textContent = '£' + newBalance.toLocaleString('en-GB', {minimumFractionDigits: 2});
+        }
+
+        async function quickTransfer() {
+            const resultDiv = document.getElementById('mobile-payment-result');
+            resultDiv.innerHTML = '<div class="result loading">Opening transfer...</div>';
+            
+            await simulateMobileDelay(800, 2000);
+            
+            if (simulateMobileFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Transfer failed: Network error</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Transfer completed successfully</div>';
+            }
+        }
+
+        async function quickPay() {
+            const resultDiv = document.getElementById('mobile-payment-result');
+            resultDiv.innerHTML = '<div class="result loading">Preparing payment...</div>';
+            
+            await simulateMobileDelay(600, 1500);
+            
+            if (simulateMobileFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Payment service unavailable</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Ready for payment</div>';
+                // Scroll to payment section
+                document.querySelector('.payment-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        async function quickDeposit() {
+            const resultDiv = document.getElementById('mobile-payment-result');
+            resultDiv.innerHTML = '<div class="result loading">Opening deposit...</div>';
+            
+            await simulateMobileDelay(800, 2000);
+            
+            if (simulateMobileFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Deposit failed: Try again</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Deposit completed successfully</div>';
+            }
+        }
+
+        async function makeMobilePayment() {
+            const amount = document.getElementById('mobile-payment-amount').value;
+            const resultDiv = document.getElementById('mobile-payment-result');
+            
+            resultDiv.innerHTML = '<div class="result loading">Processing payment of £' + amount + '...</div>';
+            
+            await simulateMobileDelay(1000, 3000);
+            
+            if (simulateMobileFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Payment failed: Poor connection</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Payment initiated</div>';
+                // Show biometric section for large amounts
+                if (parseInt(amount) > 500) {
+                    document.getElementById('biometric-section').classList.remove('hidden');
+                    document.getElementById('mobile-confirm-payment').classList.add('hidden');
+                } else {
+                    confirmMobilePayment();
+                }
+            }
+        }
+
+        async function confirmMobilePayment() {
+            const amount = document.getElementById('mobile-payment-amount').value;
+            const resultDiv = document.getElementById('mobile-payment-result');
+            
+            resultDiv.innerHTML = '<div class="result loading">Confirming payment of £' + amount + '...</div>';
+            
+            await simulateMobileDelay(1500, 4000);
+            
+            if (simulateMobileFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Payment failed: Timeout</div>';
+                document.getElementById('biometric-section').classList.add('hidden');
+                document.getElementById('mobile-confirm-payment').classList.remove('hidden');
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Payment of £' + amount + ' completed successfully</div>';
+                updateBalance(-parseFloat(amount));
+                document.getElementById('biometric-section').classList.add('hidden');
+                document.getElementById('mobile-confirm-payment').classList.add('hidden');
+                
+                // Show app loaded indicator
+                document.getElementById('mobile-app-loaded').style.display = 'block';
+            }
+        }
+
+        async function confirmBiometric() {
+            const resultDiv = document.getElementById('mobile-payment-result');
+            resultDiv.innerHTML = '<div class="result loading">Authenticating...</div>';
+            
+            await simulateMobileDelay(1500, 2500);
+            
+            if (simulateMobileFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Biometric failed: Try again</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Biometric authenticated</div>';
+                confirmMobilePayment();
+            }
+        }
+
+        // Simulate mobile app loading
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('mobile-app-loaded').style.display = 'block';
+            }, 2000);
+        });
+
+        // Handle visibility changes (background/foreground)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('App went to background');
+            } else {
+                console.log('App returned to foreground');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulse-UK Mock Banking App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .payment-form {
+            display: grid;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+        input, select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .balance {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .balance-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pulse-UK Banking</h1>
+            <p>Mock Banking Application for Payday Friday Testing</p>
+        </div>
+
+        <div class="balance">
+            <div>Current Balance</div>
+            <div class="balance-amount" id="balance">£5,250.00</div>
+        </div>
+
+        <div class="payment-form">
+            <div class="form-group">
+                <label for="payment-button">Make Payment</label>
+                <button id="payment-button" onclick="makePayment()">Process Salary Payment</button>
+            </div>
+
+            <div class="form-group">
+                <label for="payment-amount">Payment Amount (£)</label>
+                <input type="number" id="payment-amount" placeholder="Enter amount" value="1500">
+            </div>
+
+            <div class="form-group">
+                <label for="recipient">Recipient</label>
+                <input type="text" id="recipient" placeholder="Enter recipient" value="Salary Account">
+            </div>
+
+            <div class="form-group">
+                <label for="reference">Reference</label>
+                <input type="text" id="reference" placeholder="Enter reference" value="Monthly Salary">
+            </div>
+
+            <div class="form-group">
+                <button id="submit-payment" onclick="submitPayment()">Submit Payment</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="authorize-payment">Authorize Large Payment</label>
+            <button id="authorize-payment" onclick="authorizePayment()">Authorize Payment</button>
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Authorization Amount (£)</label>
+            <input type="number" id="amount" placeholder="Enter amount" value="1500">
+        </div>
+
+        <div class="form-group">
+            <button id="confirm-authorization" onclick="confirmAuthorization()">Confirm Authorization</button>
+        </div>
+
+        <div id="payment-result"></div>
+        <div id="authorization-result"></div>
+    </div>
+
+    <script>
+        function simulateDelay(min, max) {
+            return new Promise(resolve => {
+                const delay = Math.random() * (max - min) + min;
+                setTimeout(resolve, delay);
+            });
+        }
+
+        function simulateFailure() {
+            return Math.random() < 0.05; // 5% failure rate
+        }
+
+        async function makePayment() {
+            const resultDiv = document.getElementById('payment-result');
+            resultDiv.innerHTML = '<div class="result">Processing payment...</div>';
+            
+            await simulateDelay(1000, 3000);
+            
+            if (simulateFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Payment failed due to high traffic</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Payment initiated successfully</div>';
+            }
+        }
+
+        async function submitPayment() {
+            const amount = document.getElementById('payment-amount').value;
+            const recipient = document.getElementById('recipient').value;
+            const reference = document.getElementById('reference').value;
+            const resultDiv = document.getElementById('payment-result');
+            
+            resultDiv.innerHTML = '<div class="result">Processing payment of £' + amount + '...</div>';
+            
+            await simulateDelay(1500, 3500);
+            
+            if (simulateFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Payment failed: Server overload</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Payment of £' + amount + ' to ' + recipient + ' completed successfully</div>';
+                updateBalance(-parseFloat(amount));
+            }
+        }
+
+        async function authorizePayment() {
+            const resultDiv = document.getElementById('authorization-result');
+            resultDiv.innerHTML = '<div class="result">Initiating authorization...</div>';
+            
+            await simulateDelay(800, 2000);
+            
+            if (simulateFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Authorization failed: System busy</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Authorization request received</div>';
+            }
+        }
+
+        async function confirmAuthorization() {
+            const amount = document.getElementById('amount').value;
+            const resultDiv = document.getElementById('authorization-result');
+            
+            resultDiv.innerHTML = '<div class="result">Confirming authorization of £' + amount + '...</div>';
+            
+            await simulateDelay(1000, 3000);
+            
+            if (simulateFailure()) {
+                resultDiv.innerHTML = '<div class="result error">Authorization failed: Timeout</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result success">Payment of £' + amount + ' authorized successfully</div>';
+            }
+        }
+
+        function updateBalance(change) {
+            const balanceElement = document.getElementById('balance');
+            const currentBalance = parseFloat(balanceElement.textContent.replace('£', '').replace(',', ''));
+            const newBalance = currentBalance + change;
+            balanceElement.textContent = '£' + newBalance.toLocaleString('en-GB', {minimumFractionDigits: 2});
+        }
+    </script>
+</body>
+</html>

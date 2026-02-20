@@ -1,0 +1,10 @@
+uk/pulse/factory/SimpleBrowserFactory.class
+uk/pulse/interceptors/PaydayTrafficSimulator.class
+uk/pulse/factory/RealAppBrowserFactory.class
+uk/pulse/interceptors/RealAppTrafficSimulator.class
+uk/pulse/observability/MetricsClient.class
+uk/pulse/factory/RealAppBrowserFactory$DeviceProfile.class
+uk/pulse/interceptors/MobileTrafficSimulator.class
+uk/pulse/factory/MobileBrowserFactory$NetworkCondition.class
+uk/pulse/factory/RealAppBrowserFactory$AppConfiguration.class
+uk/pulse/factory/MobileBrowserFactory.class
